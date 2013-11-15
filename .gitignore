@@ -1,0 +1,4 @@
+data/
+file.db
+*.pyc
+*.DS_Store
