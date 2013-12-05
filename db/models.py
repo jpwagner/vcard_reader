@@ -155,16 +155,8 @@ def check_connection(dbapi_con, con_record, con_proxy):
 	'''Listener for Pool checkout events that pings every connection before using.
 	Implements pessimistic disconnect handling strategy. See sqlalchemy docs'''
 
-	cursor = dbapi_con.cursor()
 	try:
-		cursor.execute("SELECT 1")  # could also be dbapi_con.ping(),
-									# not sure what is better
+		dbapi_con.ping()	
 	except exc.OperationalError, ex:
-		if ex.args[0] in (2006,   # MySQL server has gone away
-						2013,   # Lost connection to MySQL server during query
-						2055):  # Lost connection to MySQL server at '%s', system error: %d
-			# caught by pool, which will retry with a new connection
-			raise exc.DisconnectionError()
-		else:
-			raise
+		raise exc.DisconnectionError()
 
